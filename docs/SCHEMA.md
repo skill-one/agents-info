@@ -85,19 +85,7 @@ SVG 是静态文件，**没有任何自动换色机制**；能否双模式使用
 
 收录标准：**真实存在 + 有官方来源 + 有真实用户迹象**（如开源仓库 star ≥ 100、正式官网、产品化运营）。
 
-## 下游高效消费（数据未变动时零下载）
-
-**前端（浏览器）直接使用**：raw 与 jsDelivr 均带 `Access-Control-Allow-Origin: *`，可跨域引用，浏览器 HTTP 缓存自动完成去重，代码无需任何特殊逻辑：
-
-| URL | 行为 |
-|---|---|
-| `raw.githubusercontent.com/skill-one/agents-info/main/agents.jsonl` | `max-age=300` + ETag：5 分钟内零请求；之后自动条件请求，未变返回 304 空 body |
-| `cdn.jsdelivr.net/gh/skill-one/agents-info@v1.0.0/agents.jsonl` | `immutable` 一年强缓存：锁版本的数据浏览器零请求 |
-| `cdn.jsdelivr.net/gh/skill-one/agents-info@main/agents.jsonl` | 浏览器 7 天 / CDN 12 小时缓存 |
-
-**服务端 / CI**：可用 `git ls-remote --tags`（仅传 ref，几百字节）或 `GET /releases/latest` API（~2KB，含附件 sha256）比对本地记录的版本号，未变则跳过下载；匿名 API 限额 60 次/小时/IP，**勿在前端调用**。
-
-数据变更时打 tag + Release（附件含 `agents.jsonl`），`releases/latest/download/agents.jsonl` 永远指向最新版本。
+发布新版本：打 tag 并创建 Release（附件含 `agents.jsonl`）。
 
 ## 相关文档
 
